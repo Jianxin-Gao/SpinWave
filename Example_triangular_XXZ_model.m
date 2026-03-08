@@ -7,7 +7,7 @@ bond_dir{1} = [1; 0]; % direction of interaction bond
 bond_dir{2} = [-1/2; -sqrt(3)/2];
 bond_dir{3} = [-1/2; sqrt(3)/2];
 
-Jxy = 1;
+Jxy = 0.5;
 Jz = 1;
 h = [0; 0; 0];
 
@@ -36,12 +36,12 @@ ctheta = 1/(1 + alpha);
 stheta = sqrt(1-ctheta^2);
 theta = acos(ctheta);
 
-% conf{1} = [stheta; 0; ctheta];
-% conf{2} = [-stheta; 0; ctheta];
-% conf{3} = [0; 0; -1];
+conf{1} = [stheta; 0; ctheta];
+conf{2} = [-stheta; 0; ctheta];
+conf{3} = [0; 0; -1];
 
+% You can choose to optimize configuration as follows:
 % [E, conf] = params.opt_energy([theta, -theta, pi, 0, 0, 0]);
-[E, conf] = params.opt_energy([pi/2, pi/2, pi/2, 2*pi/3, -2*pi/3, 0]);
 
 params.conf = conf;
 params.plot_spin_configuration();
