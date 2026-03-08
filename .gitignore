@@ -1,0 +1,41 @@
+.DS_Store
+.AppleDouble
+.LSOverride
+Icon
+._*
+.Spotlight-V100
+.Trashes
+.DocumentRevisions-V100
+.fseventsd
+.VolumeIcon.icns
+
+
+*.asv
+*.m~
+*.mat
+*.dat
+*.fig
+*.mex*
+*.mexmaci64
+*.mltbx
+slprj/
+sfprj/
+
+
+__pycache__/
+*.py[cod]
+*$py.class
+.ipynb_checkpoints/
+venv/
+env/
+.venv/
+
+
+# VS Code
+.vscode/
+*.code-workspace
+# IntelliJ / PyCharm / WebStorm
+.idea/
+# Sublime Text
+*.sublime-workspace
+
