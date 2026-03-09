@@ -1,4 +1,4 @@
-# SpinWave: Linear Spin Wave Theory Solver in MATLAB 🌊🧭
+# SpinWave: Linear Spin Wave Theory Solver in MATLAB 🧭
 
 ![Language](https://img.shields.io/badge/Language-MATLAB-blue.svg)
 ![License](https://img.shields.io/badge/License-MIT-green.svg)
@@ -55,7 +55,7 @@ end
 % Add external magnetic field
 params.add_magnetic_field([0; 0; 0]);
 
-% 4. Define Classical Ground State (Analytical Umbrella State)
+% 4. Define Classical Ground State (Y-State)
 alpha = Jxy/Jz;
 ctheta = 1/(1 + alpha);
 stheta = sqrt(1-ctheta^2);
