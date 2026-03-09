@@ -49,7 +49,6 @@ path = [
 path = unique(path, 'rows', 'stable');
 kx = path(:,1)'; ky = path(:,2)';
 
-Hk = params.get_Hk(K_point);
 omega = params.spin_wave_spec(path);
 
 figure;
