@@ -7,7 +7,7 @@ bond_dir{1} = [1; 0; 0]; % direction of interaction bond
 bond_dir{2} = [-1/2; -sqrt(3)/2; 0];
 bond_dir{3} = [-1/2; sqrt(3)/2; 0];
 
-Jxy = 1;
+Jxy = 0.5;
 Jz = 1;
 h = [0; 0; 0];
 
@@ -38,18 +38,18 @@ params.add_magnetic_field(h);
 
 % Optimize classical energy
 % % Y-state ground state
-% alpha = Jxy/Jz;
-% ctheta = 1/(1 + alpha);
-% stheta = sqrt(1-ctheta^2);
-% theta = acos(ctheta);
-% conf{1} = [stheta; 0; ctheta];
-% conf{2} = [-stheta; 0; ctheta];
-% conf{3} = [0; 0; -1];
-% 120-order ground state
-theta = 2*pi/3;
-conf{1} = [sin(theta); -cos(theta); 0];
-conf{2} = [-sin(theta); -cos(theta); 0];
-conf{3} = [0; -1; 0];
+alpha = Jxy/Jz;
+ctheta = 1/(1 + alpha);
+stheta = sqrt(1-ctheta^2);
+theta = acos(ctheta);
+conf{1} = [stheta; 0; ctheta];
+conf{2} = [-stheta; 0; ctheta];
+conf{3} = [0; 0; -1];
+% % 120-order ground state
+% theta = 2*pi/3;
+% conf{1} = [sin(theta); -cos(theta); 0];
+% conf{2} = [-sin(theta); -cos(theta); 0];
+% conf{3} = [0; -1; 0];
 
 % You can choose to optimize configuration as follows:
 % [E, conf] = params.opt_energy([theta, -theta, pi, 0, 0, 0]);

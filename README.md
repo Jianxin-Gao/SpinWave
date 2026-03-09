@@ -21,9 +21,9 @@ A lightweight, object-oriented MATLAB toolkit for calculating the spin-wave exci
 ├── @Model/                                  # MATLAB Class folder for the SpinWave Model
 │   ├── Model.m                              # Core class definition, properties, and basic methods
 │   ├── get_Hk.m                             # Constructs the 2N x 2N Hamiltonian matrix H(k)
-│   └── spin_wave_spec.m                     # Diagonalizes H(k) and returns the magnon dispersion
-├── Example_triangular_XXZ_model.m           # Example: Y-state/Umbrella state on a triangular XXZ model
-├── Example_triangular_model_4sublatt.m      # Example: Complex 4-sublattice order on a triangular lattice
+│   └── spin_wave_spec.m                     # Diagonalizes H(k) and returns the magnon dispersion and dynamical strcture factor
+├── Example_triangular_XXZ_model.m           # Example: Y-state/120 order state on a triangular XXZ model
+├── Example_square_Heisenberg_model.m        # Example: Antiferromagnetic Heisenberg model on square lattice
 ├── LICENSE                                  # MIT License
 └── README.md                                # Project documentation
 ```
@@ -64,11 +64,12 @@ conf{1} =[stheta; 0; ctheta];
 conf{2} = [-stheta; 0; ctheta];
 conf{3} = [0; 0; -1];
 
+% Note: You can also use the built-in optimizer:
+% [E, conf] = params.opt_energy([theta, -theta, pi, 0, 0, 0]);
+
 params.conf = conf;
 params.plot_spin_configuration(); % Verify configuration visually
 
-% Note: You can also use the built-in optimizer:
-% [E, conf] = params.opt_energy([theta, -theta, pi, 0, 0, 0]);
 
 % 5. Define k-path (Gamma -> K -> M -> Gamma)
 nk = 100;
@@ -84,13 +85,17 @@ path =[
 path = unique(path, 'rows', 'stable'); % Remove duplicate connection points
 
 % 6. Calculate Spectrum and Plot
-omega = params.spin_wave_spec(path);
+[omega, intensity] = params.spin_wave_spec(path);
 
-figure;
-plot(1:size(path, 1), omega', 'LineWidth', 3);
+figure; hold on;
+params.plot_spin_wave_spec('sigma', 0.03);
+caxis([0, 2.5]);
+cbar = colorbar;
+cbar.Label.String = 'S(q, \omega)';
+cbar.Label.FontSize = 20;
 xticks([1, nk, 2*nk-1, size(path, 1)]);
 xticklabels({'\Gamma', 'K', 'M', '\Gamma'});
-ylabel('Energy \omega');
+ylabel('\omega');
 xlim([1, size(path, 1)]);
 set(gca, 'LineWidth', 2, 'FontSize', 20);
 ```
