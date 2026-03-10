@@ -1,13 +1,14 @@
 classdef Model < handle
     properties
-        cell_size
-        intr_mat
-        conf
-        S = 1/2
-        pos
-        omega
-        intensity
-        path
+        cell_size       % (int/double)                               size of sublattice
+        intr_mat        % (struct)                                   interactions
+        conf            % (1 \times cell_size cell)                  normalized classical spin configuration
+        S = 1/2         % (double)                                   local spin
+        %         pos             %
+        omega           % (cell_size \times n_k double)              spin wave spectrum
+        path            % (n_k \times 3 double)                      k-path of spin wave calculation
+        dynamic_struc   % (3 \times 3 \times n_k \times n_omega)     S^{\alpha\beta}(k, \omega), dynamical structure factor
+        omega_list      % (1 \times n_omega)                         omega values of S^{\alpha\beta}(k, \omega)
     end
     
     methods
@@ -15,7 +16,7 @@ classdef Model < handle
             obj.cell_size = cell_size;
             obj.intr_mat = struct('two_site', struct('site1', [], 'site2', [], 'Jmat', [], 'd', []), ...
                 'magnetic_field', [0;0;0]);
-            obj.pos = cell(1, cell_size);
+            %             obj.pos = cell(1, cell_size);
             
         end
         
@@ -103,59 +104,50 @@ classdef Model < handle
         
         function plot_spin_wave_spec(obj, varargin)
             p = inputParser;
-
-            addParameter(p, 'sigma', 0.05); % Gauss sigma factor
-            addParameter(p, 'dE', 0.01); % Energy grid
+            
+            addParameter(p, 'LineWidth', 2);
+            addParameter(p, 'FontSize', 24);
             
             
-
+            
             parse(p, varargin{:});
             
-            E_max = max(obj.omega(:)) * 1.1;
-            dE = p.Results.dE;                  
-            E_grid = (0:dE:E_max)';     
-            nE = length(E_grid);
+            figure;
+            plot(1:size(obj.path, 1), obj.omega', 'LineWidth', p.Results.LineWidth);
+            set(gca, 'FontSize', p.Results.FontSize, 'LineWidth', p.Results.LineWidth);
+            xticklabels({})
+            ylabel('\omega', 'FontSize', p.Results.FontSize)
+        end
+        
+        
+        function plot_dynamics(obj, Sk_tot, varargin)
+            p = inputParser;
             
-            x_coords = 1:size(obj.path, 1);
-            nx = length(x_coords);
+            addParameter(p, 'LineWidth', 2);
+            addParameter(p, 'FontSize', 24);
+            addParameter(p, 'cmax', 50);
+            addParameter(p, 'colormap', 'jet');
+        
+            parse(p, varargin{:});
             
-            S2D = zeros(nE, nx);
-            
-            sigma = p.Results.sigma; % Gauss sigma factor
-            
-            for itk = 1:nx
-                for n = 1:obj.cell_size
-                    w_nk = obj.omega(n, itk);
-                    I_nk = obj.intensity(n, itk);
-                    
-                    if I_nk > 1e-4
-                        S2D(:, itk) = S2D(:, itk) + I_nk * exp(-0.5 * ((E_grid - w_nk) / sigma).^2);
-                    end
-                end
+            nk = size(obj.path, 1);
+            nomega = length(obj.omega_list);
+            if size(Sk_tot, 1) == nk
+                Sk_tot = Sk_tot.';
             end
             
+            figure;
+            pcolor(1:nk, obj.omega_list, Sk_tot);
+            shading interp;
+            colormap('jet'); % 'jet', 'turbo', 'hot'
             
-            [X, Y] = meshgrid(x_coords, E_grid);
-            pcolor(X, Y, S2D);
-            shading interp; 
+            caxis([0, p.Results.cmax])
+            set(gca, 'FontSize', p.Results.FontSize, 'LineWidth', p.Results.LineWidth);
+            xticklabels({})
+            ylabel('\omega', 'FontSize', p.Results.FontSize)
             
-
-            try colormap(turbo); catch; colormap(jet); end
-            
-            cbar = colorbar;
-            cbar.Label.String = 'S(q, \omega)';
-            cbar.Label.FontSize = 14;
-            
-
-%             try clim([0, clim_max]); catch; caxis([0, clim_max]); end
-            
-%             xticks([1, nk, 2*nk-1, nx]);
-%             xticklabels({'\Gamma', 'K', 'M', '\Gamma'});
-            ylabel('Energy');
-            xlim([1, nx]);
-            ylim([0, E_max]);
-            set(gca, 'LineWidth', 2, 'FontSize', 20, 'Layer', 'top');
-            box on;
+            cb = colorbar;
+            cb.LineWidth = p.Results.LineWidth;
         end
     end
     

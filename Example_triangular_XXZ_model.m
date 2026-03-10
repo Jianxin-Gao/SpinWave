@@ -13,26 +13,26 @@ h = [0; 0; 0];
 
 Jmat = diag([Jxy, Jxy, Jz]);
 
-params = Model(cell_size);
+sys = Model(cell_size);
 
-params.pos{1} = [-1/2; 0; 0];
-params.pos{2} = [1/2; 0; 0];
-params.pos{3} = [0; sqrt(3)/2; 0];
+% sys.pos{1} = [-1/2; 0; 0];
+% sys.pos{2} = [1/2; 0; 0];
+% sys.pos{3} = [0; sqrt(3)/2; 0];
 
 
-params.add_two_site_intr(1, 2, Jmat, bond_dir{1});
-params.add_two_site_intr(1, 2, Jmat, bond_dir{2});
-params.add_two_site_intr(1, 2, Jmat, bond_dir{3});
+sys.add_two_site_intr(1, 2, Jmat, bond_dir{1});
+sys.add_two_site_intr(1, 2, Jmat, bond_dir{2});
+sys.add_two_site_intr(1, 2, Jmat, bond_dir{3});
 
-params.add_two_site_intr(2, 3, Jmat, bond_dir{1});
-params.add_two_site_intr(2, 3, Jmat, bond_dir{2});
-params.add_two_site_intr(2, 3, Jmat, bond_dir{3});
+sys.add_two_site_intr(2, 3, Jmat, bond_dir{1});
+sys.add_two_site_intr(2, 3, Jmat, bond_dir{2});
+sys.add_two_site_intr(2, 3, Jmat, bond_dir{3});
 
-params.add_two_site_intr(3, 1, Jmat, bond_dir{1});
-params.add_two_site_intr(3, 1, Jmat, bond_dir{2});
-params.add_two_site_intr(3, 1, Jmat, bond_dir{3});
+sys.add_two_site_intr(3, 1, Jmat, bond_dir{1});
+sys.add_two_site_intr(3, 1, Jmat, bond_dir{2});
+sys.add_two_site_intr(3, 1, Jmat, bond_dir{3});
 
-params.add_magnetic_field(h);
+sys.add_magnetic_field(h);
 
 
 
@@ -54,8 +54,8 @@ conf{3} = [0; 0; -1];
 % You can choose to optimize configuration as follows:
 % [E, conf] = params.opt_energy([theta, -theta, pi, 0, 0, 0]);
 
-params.conf = conf;
-params.plot_spin_configuration();
+sys.conf = conf;
+sys.plot_spin_configuration();
 
 
 % Spin wave spec
@@ -73,18 +73,22 @@ path = unique(path, 'rows', 'stable');
 kx = path(:,1)'; ky = path(:,2)';
 
 
-
-[omega, intensity] = params.spin_wave_spec(path);
-
-figure; hold on;
-params.plot_spin_wave_spec('sigma', 0.03);
-caxis([0, 2.5]);
-cbar = colorbar;
-cbar.Label.String = 'S(q, \omega)';
-cbar.Label.FontSize = 20;
+sys.spin_wave_spec(path, 'dynamical', true);
+sys.plot_spin_wave_spec();
+Sk_tot = sys.struc_fac_utils('total');
+sys.plot_dynamics(Sk_tot);
 xticks([1, nk, 2*nk-1, size(path, 1)]);
 xticklabels({'\Gamma', 'K', 'M', '\Gamma'});
-ylabel('\omega');
-xlim([1, size(path, 1)]);
-set(gca, 'LineWidth', 2, 'FontSize', 20);
+
+% figure; hold on;
+% params.plot_spin_wave_spec('sigma', 0.03);
+% caxis([0, 2.5]);
+% cbar = colorbar;
+% cbar.Label.String = 'S(q, \omega)';
+% cbar.Label.FontSize = 20;
+% xticks([1, nk, 2*nk-1, size(path, 1)]);
+% xticklabels({'\Gamma', 'K', 'M', '\Gamma'});
+% ylabel('\omega');
+% xlim([1, size(path, 1)]);
+% set(gca, 'LineWidth', 2, 'FontSize', 20);
 

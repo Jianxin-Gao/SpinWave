@@ -11,25 +11,25 @@ h = [0; 0; 0];
 
 Jmat = diag([J, J, J]);
 
-params = Model(cell_size);
+sys = Model(cell_size);
 
-params.pos{1} = [0; 0; 0];
-params.pos{2} = [1; 0; 0];
+% sys.pos{1} = [0; 0; 0];
+% sys.pos{2} = [1; 0; 0];
 
-params.add_two_site_intr(1, 2, Jmat, bond_dir{1});
-params.add_two_site_intr(1, 2, Jmat, bond_dir{2});
-params.add_two_site_intr(1, 2, Jmat, -bond_dir{1});
-params.add_two_site_intr(1, 2, Jmat, -bond_dir{2});
+sys.add_two_site_intr(1, 2, Jmat, bond_dir{1});
+sys.add_two_site_intr(1, 2, Jmat, bond_dir{2});
+sys.add_two_site_intr(1, 2, Jmat, -bond_dir{1});
+sys.add_two_site_intr(1, 2, Jmat, -bond_dir{2});
 
-params.add_magnetic_field(h);
+sys.add_magnetic_field(h);
 
 
 
 % Optimize classical energy
-params.conf{1} = [0; 0; 1];
-params.conf{2} = [0; 0; -1];
+sys.conf{1} = [0; 0; 1];
+sys.conf{2} = [0; 0; -1];
 
-params.plot_spin_configuration();
+sys.plot_spin_configuration();
 
 
 
@@ -48,24 +48,21 @@ path = [
 path = unique(path, 'rows', 'stable');
 kx = path(:,1)'; ky = path(:,2)';
 
-[omega, intensity] = params.spin_wave_spec(path);
 
 
-omega_exact = 4 * J * params.S * sqrt(1-1/4*(cos(kx)+cos(ky)).^2); % exact solution
+omega_exact = 4 * J * sys.S * sqrt(1-1/4*(cos(kx)+cos(ky)).^2); % exact solution
 
 % Plot
-figure;
-params.plot_spin_wave_spec('sigma', 0.05); hold on;
-plot(1:size(path, 1), omega_exact', 'r--', 'LineWidth', 2);
+sys.spin_wave_spec(path, 'dynamical', true);
+sys.plot_spin_wave_spec(); hold on;
+plot(1:size(path, 1), omega_exact', 'o', 'LineWidth', 2);
 xticks([1, nk, 2*nk-1, size(path, 1)]);
 xticklabels({'\Gamma', 'X', 'M', '\Gamma'});
-cbar = colorbar;
-cbar.Label.String = 'S(q, \omega)';
-cbar.Label.FontSize = 20;
+
+
+Sk_tot = sys.struc_fac_utils('total');
+sys.plot_dynamics(Sk_tot);
 xticks([1, nk, 2*nk-1, size(path, 1)]);
 xticklabels({'\Gamma', 'X', 'M', '\Gamma'});
-ylabel('\omega');
-xlim([1, size(path, 1)]);
-% ylim([0, max(omega(1, :))*1.3])
-set(gca, 'LineWidth', 2, 'FontSize', 20);
+
 
