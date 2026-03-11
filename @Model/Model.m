@@ -85,8 +85,11 @@ classdef Model < handle
                 conf_input = obj.conf;
             end
             
-            figure; hold on;
-            plot3(0, 0, 0, 'o', 'MarkerSize', 10, 'MarkerFaceColor', [0, 0, 0], 'MarkerEdgeColor', [0, 0, 0])
+%             figure; 
+            hold on;
+            plot3(0, 0, 0, 'o', 'MarkerSize', 10, 'MarkerFaceColor', [0, 0, 0], 'MarkerEdgeColor', [0, 0, 0]);
+            hold on;
+            
             for it = 1:obj.cell_size
                 conf_input{it} = conf_input{it}/norm(conf_input{it});
                 quiver3(0,0,0, conf_input{it}(1), conf_input{it}(2), conf_input{it}(3), ...
@@ -112,7 +115,7 @@ classdef Model < handle
             
             parse(p, varargin{:});
             
-            figure;
+%             figure;
             plot(1:size(obj.path, 1), obj.omega', 'LineWidth', p.Results.LineWidth);
             set(gca, 'FontSize', p.Results.FontSize, 'LineWidth', p.Results.LineWidth);
             xticklabels({})
@@ -136,7 +139,7 @@ classdef Model < handle
                 Sk_tot = Sk_tot.';
             end
             
-            figure;
+%             figure;
             pcolor(1:nk, obj.omega_list, Sk_tot);
             shading interp;
             colormap('jet'); % 'jet', 'turbo', 'hot'

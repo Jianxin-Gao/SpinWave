@@ -53,13 +53,14 @@ kx = path(:,1)'; ky = path(:,2)';
 omega_exact = 4 * J * sys.S * sqrt(1-1/4*(cos(kx)+cos(ky)).^2); % exact solution
 
 % Plot
-sys.spin_wave_spec(path, 'dynamical', true);
+figure;
+sys.spin_wave_spec(path, 'dynamical', true, 'dynamical_broad', true, 'sigma', 0.02, 'n_omega', 3000);
 sys.plot_spin_wave_spec(); hold on;
 plot(1:size(path, 1), omega_exact', 'o', 'LineWidth', 2);
 xticks([1, nk, 2*nk-1, size(path, 1)]);
 xticklabels({'\Gamma', 'X', 'M', '\Gamma'});
 
-
+figure;
 Sk_tot = sys.struc_fac_utils('total');
 sys.plot_dynamics(Sk_tot);
 xticks([1, nk, 2*nk-1, size(path, 1)]);
