@@ -28,8 +28,11 @@ for itk = 1:size(path, 1)
     
     obj.omega(:, itk) = evals_sorted(1:N);
     V_sorted{itk} = V(:,idx);
-    if max(abs(imag(eig_vals))) > 1e-10
-        warning('Imagary part of eig(g*H_k) is larger than 1e-10!')
+    wouldWarn = ((max(evals) > 1e-4) && (max(imag(eig_vals)) > 1e-10)) ...
+        || (max(imag(eig_vals)) > 1e-7);
+    if wouldWarn
+    
+        warning('Imagary part of eig(g*H_k) is large!')
     end
     
     
